@@ -12,21 +12,21 @@ const getAirQualityStatus = (value) => {
   return 'Hazardous';
 };
 
-const Quality = () => {
+const Quality = ({ value }) => {
   const [aqi, setAqi] = useState(0);
   const [status, setStatus] = useState(getAirQualityStatus(aqi));
 
   useEffect(() => {
     // Here you can fetch AQI data and update the state
-    const intervalId = setInterval(() => {
+    // const intervalId = setInterval(() => {
       // Simulate fetching new AQI data
-      const newAqi = Math.floor(Math.random() * 500); // Replace this with your actual data fetch
+      const newAqi = value; // Replace this with your actual data fetch
       setAqi(newAqi);
       setStatus(getAirQualityStatus(newAqi));
-    }, 1000);
+    // }, 1000);
 
-    return () => clearInterval(intervalId); // Cleanup the interval on component unmount
-  }, []);
+    // return () => clearInterval(intervalId); // Cleanup the interval on component unmount
+  }, [value]);
 
   return (
     <div class={`p-6 w-96 h-48 m-2.5 ${statusToColor(status)} border border-gray-300 rounded-lg`}>
