@@ -1,0 +1,3 @@
+[submodule "EmbedProjectHAL"]
+	path = EmbedProjectHAL
+	url = https://github.com/PatrickChoDev/EmbedProjectHAL.git
