@@ -70,14 +70,16 @@ export default function Home() {
       <div class="info flex justify-evenly w-[1280px]">
           <Quality value={aqi}/>
           <Dust value={dust}/>
-        <div class="info-block2 w-[700px] h-48 m-2.5 border border-gray-300 rounded-lg bg-white">
+        <div class="relative flex w-[700px] h-48 m-2.5 border border-gray-300 rounded-lg bg-white">
           <RealTimeClock />
-          <div className="flex flex-col pl-4 pt-2">
-            <div>Group member</div>
-            <div>Person 1</div>
-            <div>Person 2</div>
-            <div>Person 3</div>
-            <div>Person 4</div>
+          <div className="absolute right-[270px] mt-4 h-40 w-0 border border-gray-200"></div>
+          <div className="absolute right-6 flex flex-col justify-center pt-6 z-[1]">
+            <div className="text-3xl font-semibold justify-center items-center text-gray-700">TodayRich</div>
+            <div className="text-sm">member:</div>
+            <div>Chatdanai Porncharoensub</div>
+            <div>Tonkla Wiboonlertwatana</div>
+            <div>Thanapat Chotipun</div>
+            <div>Wichayada Chamnansil</div>
           </div>
         </div>
         </div>

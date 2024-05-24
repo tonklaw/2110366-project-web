@@ -16,7 +16,7 @@ const Controll = () => {
         <button
           onClick={togglePause}
           className={`w-[400px] h-32 text-white text-2xl font-bold rounded-lg focus:outline-none ${
-            isPause ? 'bg-red-500' : 'bg-green-500'
+            isPause ? 'bg-[#f57c73]' : 'bg-[#6bc8a3]'
           }`}
         >
           {isPause ? 'PAUSE' : 'RESUME'}

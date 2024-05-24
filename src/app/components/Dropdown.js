@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 const Dropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [data, setData] = useState("PM2.5");
+  const [data, setData] = useState("AQI (Air Qualty Index)");
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
