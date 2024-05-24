@@ -3,7 +3,7 @@ import Dropdown from './components/Dropdown';
 import RadioBox from "./components/Radio";
 import Controll from "./components/Controll";
 import Quality from "./components/Quality";
-import Statistic from "./components/Statistic";
+import Dust from "./components/Dust";
 import RealTimeClock from "./components/Information";
 
 export default function Home() {
@@ -11,12 +11,8 @@ export default function Home() {
     <main className="h-full mt-16 flex flex-col items-center justify-center content-center">
       <h1 className="mb-5 text-4xl font-medium text-gray-700">Atmospheric Particulate Matter Forecasting</h1>
       <div class="info flex justify-evenly w-[1280px]">
-        <div class="info-block1 w-96 h-48 m-2.5 border border-gray-300 rounded-lg bg-white">
-          
-        </div>
-        <div class="info-block1 w-96 h-48 m-2.5 border border-gray-300 rounded-lg bg-white">
-         
-        </div>
+          <Quality />
+          <Dust />
         <div class="info-block2 w-[700px] h-48 m-2.5 border border-gray-300 rounded-lg bg-white">
           <RealTimeClock />
           <div className="flex flex-col pl-4 pt-2">
