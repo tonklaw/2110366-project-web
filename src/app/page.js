@@ -7,8 +7,17 @@ import Controll from "./components/Controll";
 import Quality from "./components/Quality";
 import Dust from "./components/Dust";
 import RealTimeClock from "./components/Information";
+import {create} from "zustand"
 
 import React, { useEffect, useState, useRef } from 'react';
+export const useAppStore = create((set) => ({
+  type: "AQI",
+  rate: 5000,
+  pause: false,
+  setType: (newType) => set(() => ({ type: newType })),
+  setRate: (newRate) => set(() => ({ rate: newRate })),
+  setPause: (newPause) => set(() => ({ pause: newPause }))
+}))
 
 export default function Home() {
 
@@ -20,7 +29,7 @@ export default function Home() {
 
   useEffect(() => {
     const connectWebSocket = () => {
-      ws.current = new WebSocket('ws://localhost:8080');
+      ws.current = new WebSocket('ws://172.20.10.5:8080');
 
       ws.current.onopen = () => {
         console.log('Connected to WebSocket');
@@ -67,10 +76,10 @@ export default function Home() {
   return (
     <main className="h-full mt-16 flex flex-col items-center justify-center content-center">
       <h1 className="mb-5 text-4xl font-medium text-gray-700">Atmospheric Particulate Matter Forecasting</h1>
-      <div class="info flex justify-evenly w-[1280px]">
+      <div className="info flex justify-evenly w-[1280px]">
           <Quality value={aqi}/>
           <Dust value={dust}/>
-        <div class="relative flex w-[700px] h-48 m-2.5 border border-gray-300 rounded-lg bg-white">
+        <div className="relative flex w-[700px] h-48 m-2.5 border border-gray-300 rounded-lg bg-white">
           <RealTimeClock />
           <div className="absolute right-[270px] mt-4 h-40 w-0 border border-gray-200"></div>
           <div className="absolute right-6 flex flex-col justify-center pt-6 z-[1]">
@@ -83,7 +92,7 @@ export default function Home() {
           </div>
         </div>
         </div>
-      <div class="graph-block w-[1260px] h-[420px] m-2.5 p-4 flex items-center justify-evenly border border-gray-300 rounded-lg bg-white">
+      <div className="graph-block w-[1260px] h-[420px] m-2.5 p-4 flex items-center justify-evenly border border-gray-300 rounded-lg bg-white">
         <div className="graph-data w-[900px] h-[400px]">
           <LineChart />
         </div>

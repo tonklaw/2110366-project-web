@@ -30,7 +30,7 @@ const Dust = ({ value }) => {
 
   return (
     <div class={`relative p-6 w-96 h-48 m-2.5 ${statusToColor(status)} rounded-lg`}>
-          <div className="font-semibold">Dust (V)</div>
+          <div className="font-semibold">Dust (ug/m^3)</div>
           <div className="absolute top-[16px] left-[200px] z-[1]">
           <svg xmlns="http://www.w3.org/2000/svg" width="6.5em" height="6.5em" 
           viewBox="0 0 28 28"><path fill={status == 'Moderate' ? "gray-700" : "white"} d="M16.5 3a6.5 6.5 0 0 0-6.258 4.736a6.5 6.5 0 1 0 0 12.527A6.5 6.5 0 1 0 21.19 14A6.5 6.5 0 0 0 16.5 3m-4.955 5.829a5.001 5.001 0 1 1 8.068 4.584a.75.75 0 0 0 0 1.174a5 5 0 1 1-8.068 4.585a.75.75 0 0 0-1.044-.588a5 5 0 1 1 0-9.168a.75.75 0 0 0 1.044-.587M9 4a1 1 0 1 1-2 0a1 1 0 0 1 2 0m16 11a1 1 0 1 0 0-2a1 1 0 0 0 0 2M8 25a1 1 0 1 0 0-2a1 1 0 0 0 0 2"/></svg>

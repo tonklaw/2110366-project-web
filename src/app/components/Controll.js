@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useAppStore } from "@/app/page"
 
 const Controll = () => {
-  const [isPause, setPause] = useState(false);
+  const isPause = useAppStore((state) => state.pause);
+  const setPause = useAppStore((state) => state.setPause);
 
   const togglePause = () => {
     setPause(!isPause);

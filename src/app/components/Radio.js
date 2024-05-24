@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAppStore } from "@/app/page"
 
 const RadioBox = () => {
-  const [rate, setRate] = useState(1000);
+  const rate = useAppStore((state) => state.rate);
+  const setRate = useAppStore((state) => state.setRate);
 
   const handleOptionChange = (event) => {
     setRate(parseInt(event.target.value));
