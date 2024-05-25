@@ -35,7 +35,7 @@ export default function Home() {
   
   useEffect(() => {
     const connectWebSocket = () => {
-      ws.current = new WebSocket('ws://172.20.10.5:8080');
+      ws.current = new WebSocket('ws://localhost:8080');
 
       ws.current.onopen = () => {
         console.log('Connected to WebSocket');
