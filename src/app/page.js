@@ -21,12 +21,17 @@ export const useAppStore = create((set) => ({
 
 export default function Home() {
 
-  const [updates, setUpdates] = useState([]);
+  const [payload, setPayload] = useState([]);
   const [aqi, setAqi] = useState(0.0);
   const [dust, setDust] = useState(0.0);
+  const [aqiSet, setAqiSet] = useState([]);
+  const [dustSet, setDustSet] = useState([]);
+  const [timeSet, setTimeSet] = useState([]);
   const ws = useRef(null);
   const retryTimeout = useRef(1000);
-
+  const pause = useAppStore((state) => state.pause);
+  const rate = useAppStore((state) => state.rate)/1000;
+  
   useEffect(() => {
     const connectWebSocket = () => {
       ws.current = new WebSocket('ws://172.20.10.5:8080');
@@ -34,6 +39,7 @@ export default function Home() {
       ws.current.onopen = () => {
         console.log('Connected to WebSocket');
         retryTimeout.current = 1000; // Reset retry timeout on successful connection
+        ws.current.send(JSON.stringify({rate: rate}))
       };
 
       ws.current.onmessage = (event) => {
@@ -42,13 +48,16 @@ export default function Home() {
 
         setAqi(data.aqi);
         setDust(data.dust);
-
-        setUpdates((prevUpdates) => [...prevUpdates, data]);
+        
+        setPayload(data.payload);
+        setAqiSet(data.payload.map((e) => e.aqi));
+        setDustSet(data.payload.map((e) => e.dust));
+        setTimeSet(data.payload.map((e) => e.timestamp));
       };
 
       ws.current.onclose = () => {
         console.log('Disconnected from WebSocket, attempting to reconnect...');
-        retryConnection();
+        if (!pause) retryConnection();
       };
 
       ws.current.onerror = (error) => {
@@ -56,13 +65,14 @@ export default function Home() {
         ws.current.close();
       };
     };
-
-    const retryConnection = () => {
-      setTimeout(() => {
-        retryTimeout.current = Math.min(retryTimeout.current * 2, 5000); // Exponential backoff with a cap at 30 seconds
-        connectWebSocket();
-      }, retryTimeout.current);
-    };
+    
+    
+    // const retryConnection = () => {
+    //   setTimeout(() => {
+    //     retryTimeout.current = Math.min(retryTimeout.current * 2, 5000); // Exponential backoff with a cap at 30 seconds
+    //     connectWebSocket();
+    //   }, retryTimeout.current);
+    // };
 
     connectWebSocket();
 
@@ -71,7 +81,17 @@ export default function Home() {
         ws.current.close();
       }
     };
-  }, []);
+  }, [pause]);
+
+  useEffect(() => {
+    ws.current.close()
+  },[pause]);
+
+  useEffect(() => {
+    if (ws.current.readyState === WebSocket.OPEN) {
+      ws.current.send(JSON.stringify({rate: rate}))
+    }
+  },[rate]);
 
   return (
     <main className="h-full mt-16 flex flex-col items-center justify-center content-center">
@@ -94,7 +114,7 @@ export default function Home() {
         </div>
       <div className="graph-block w-[1260px] h-[420px] m-2.5 p-4 flex items-center justify-evenly border border-gray-300 rounded-lg bg-white">
         <div className="graph-data w-[900px] h-[400px]">
-          <LineChart />
+          <LineChart  aqi={aqiSet} dust={dustSet} time={timeSet} />
         </div>
         <div className="flex flex-col items-center justify-center w-[450px] gap-4">
           <Dropdown />

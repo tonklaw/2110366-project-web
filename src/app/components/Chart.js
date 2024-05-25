@@ -1,151 +1,96 @@
 "use client";
-
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'chart.js/auto';
-import { useAppStore } from "@/app/page"
+import { useAppStore } from "@/app/page";
 
 const Line = dynamic(() => import('react-chartjs-2').then((mod) => mod.Line), {
   ssr: false,
 });
 
-const AQI = {
-  labels: [0,5,10,15,20,25,30,35,40,45], // Time labels
-    datasets: [{
-      label: 'AQI',
-      data: [45,47,51,50,49,48,47,44,45,46.2], // AQI Array
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      borderColor: '#f57c73',
-      borderWidth: 4,
-      lineTension: 0.1,
-      fill: false
-    }]
-};
-
-const aqiOptions = {
-  scales: {
-    x: {
-      title: {
-        display: true,
-        text: 'Time',
-        font: {
-          family: '__Montserrat_b1da2a', // Change the font family
-          size: 14, // Change the font size
-          weight: 'bold' // Change the font weight
-        }
-      },
-      ticks: {
-        font: {
-          family: '__Montserrat_b1da2a',
-          size: 12,
-          weight: 'normal'
-        }
-      }
-    },
-    y: {
-      beginAtZero: true,
-      title: {
-        display: true,
-        text: 'AQI (ppm)',
-        font: {
-          family: '__Montserrat_b1da2a', // Change the font family
-          size: 14, // Change the font size
-          weight: 'bold' // Change the font weight
-        }
-      },
-      ticks: {
-        font: {
-          family: '__Montserrat_b1da2a',
-          size: 12,
-          weight: 'normal'
-        }
-      }
-    }
-  },
-  plugins: {
-    legend: {
-      labels: {
-        font: {
-          family: '__Montserrat_b1da2a',
-          size: 12,
-          weight: 'normal'
-        }
-      }
-    }
-  }
-};
-
-const Dust = {
-  labels: [0,5,10,15,20,25,30,35,40,45], // Time labels
-    datasets: [{
-      label: 'Dust',
-      data: [2,4,7,5,6,2,4,8,6,7,10], //Dust Array
-      backgroundColor: '#bde0fe',
-      borderColor: '#79addc',
-      borderWidth: 4,
-      lineTension: 0.1,
-      fill: false
-    }]
-};
-
-const dustOptions = {
-  scales: {
-    x: {
-      title: {
-        display: true,
-        text: 'Time',
-        font: {
-          family: '__Montserrat_b1da2a', // Change the font family
-          size: 14, // Change the font size
-          weight: 'bold' // Change the font weight
-        }
-      },
-      ticks: {
-        font: {
-          family: '__Montserrat_b1da2a',
-          size: 12,
-          weight: 'normal'
-        }
-      }
-    },
-    y: {
-      beginAtZero: true,
-      title: {
-        display: true,
-        text: 'Dust (ug/m^3)',
-        font: {
-          family: '__Montserrat_b1da2a', // Change the font family
-          size: 14, // Change the font size
-          weight: 'bold' // Change the font weight
-        }
-      },
-      ticks: {
-        font: {
-          family: '__Montserrat_b1da2a',
-          size: 12,
-          weight: 'normal'
-        }
-      }
-    }
-  },
-  plugins: {
-    legend: {
-      labels: {
-        font: {
-          family: '__Montserrat_b1da2a',
-          size: 12,
-          weight: 'normal'
-        }
-      }
-    }
-  }
-};
-
-export default function LineChart() {
+const LineChart = ({ aqi, dust, time }) => {
   const type = useAppStore((state) => state.type);
-  const rate = useAppStore((state) => state.rate);
-  // setInterval(clockRate,rate)
+  const rate = useAppStore((state) => state.rate)/1000;
+  const [aqiData, setAqiData] = useState([0]);
+  const [dustData, setDustData] = useState([0]);
+  const [timeDate, setTimeData] = useState(new Array(10).fill(0));
+
+  useEffect(() => {
+      setAqiData(aqi);
+      setDustData(dust);
+      setTimeData(time);
+
+  }, [aqi, dust, time, type]);
+
+  const data = {
+    labels: timeDate.map((e) => new Date(e).toLocaleTimeString()),
+    datasets: [{
+      label: type === "AQI" ? 'AQI' : 'Dust',
+      data: type === "AQI" ? aqiData : dustData,
+      backgroundColor: type === "AQI" ? 'rgba(255, 99, 132, 0.2)' : '#bde0fe',
+      borderColor: type === "AQI" ? '#f57c73' : '#79addc',
+      borderWidth: 4,
+      lineTension: 0.1,
+      fill: false
+    }]
+  };
+
+  const options = {
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Time',
+          font: {
+            family: '__Montserrat_b1da2a',
+            size: 14,
+            weight: 'bold'
+          }
+        },
+        ticks: {
+          font: {
+            family: '__Montserrat_b1da2a',
+            size: 12,
+            weight: 'normal'
+          }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: type === "AQI" ? 'AQI (ppm)' : 'Dust (ug/m^3)',
+          font: {
+            family: '__Montserrat_b1da2a',
+            size: 14,
+            weight: 'bold'
+          }
+        },
+        ticks: {
+          font: {
+            family: '__Montserrat_b1da2a',
+            size: 12,
+            weight: 'normal'
+          }
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        labels: {
+          font: {
+            family: '__Montserrat_b1da2a',
+            size: 12,
+            weight: 'normal'
+          }
+        }
+      }
+    }
+  };
 
   return (
-      <Line data={type == "AQI" ? AQI : Dust} options={type == "AQI" ? aqiOptions : dustOptions}/>
+    <Line data={data} options={options} />
   );
 };
+
+export default LineChart;
