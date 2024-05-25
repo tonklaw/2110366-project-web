@@ -29,6 +29,7 @@ export default function Home() {
   const [timeSet, setTimeSet] = useState([]);
   const ws = useRef(null);
   const retryTimeout = useRef(1000);
+  const retryTimeoutId = useRef(null);
   const pause = useAppStore((state) => state.pause);
   const rate = useAppStore((state) => state.rate)/1000;
   
@@ -57,7 +58,7 @@ export default function Home() {
 
       ws.current.onclose = () => {
         console.log('Disconnected from WebSocket, attempting to reconnect...');
-        if (!pause) retryConnection();
+        retryConnection();
       };
 
       ws.current.onerror = (error) => {
@@ -67,12 +68,15 @@ export default function Home() {
     };
     
     
-    // const retryConnection = () => {
-    //   setTimeout(() => {
-    //     retryTimeout.current = Math.min(retryTimeout.current * 2, 5000); // Exponential backoff with a cap at 30 seconds
-    //     connectWebSocket();
-    //   }, retryTimeout.current);
-    // };
+    const retryConnection = () => {
+      if (retryTimeoutId.current) {
+        clearTimeout(retryTimeoutId.current);
+      }
+      retryTimeoutId.current = setTimeout(() => {
+        retryTimeout.current = Math.min(retryTimeout.current * 2, 5000); // Exponential backoff with a cap at 5 seconds
+        connectWebSocket();
+      }, retryTimeout.current);
+    };
 
     connectWebSocket();
 
@@ -80,18 +84,36 @@ export default function Home() {
       if (ws.current) {
         ws.current.close();
       }
+      if (retryTimeoutId.current) {
+        clearTimeout(retryTimeoutId.current);
+      }
     };
-  }, [pause]);
+  }, []);
 
   useEffect(() => {
-    ws.current.close()
+    if (!pause) {
+      ws.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('Update received:', data);
+
+        setAqi(data.aqi);
+        setDust(data.dust);
+        
+        setPayload(data.payload);
+        setAqiSet(data.payload.map((e) => e.aqi));
+        setDustSet(data.payload.map((e) => e.dust));
+        setTimeSet(data.payload.map((e) => e.timestamp));
+      };
+    } else {
+      ws.current.onmessage = null;
+    }
   },[pause]);
 
   useEffect(() => {
-    if (ws.current.readyState === WebSocket.OPEN) {
-      ws.current.send(JSON.stringify({rate: rate}))
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+      ws.current.send(JSON.stringify({rate: rate}));
     }
-  },[rate]);
+  }, [rate]);
 
   return (
     <main className="h-full mt-16 flex flex-col items-center justify-center content-center">
